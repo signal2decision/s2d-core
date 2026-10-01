@@ -1,0 +1,134 @@
+{
+  "schema_version": "0.1.0",
+  "id": "S2D-WHT-0001",
+  "illustrative": true,
+  "question": "Should I sow wheat now, or wait?",
+  "crop": "wheat",
+  "location": {
+    "name": "Sargodha",
+    "country_code": "PK",
+    "lat": 32.08,
+    "lon": 72.67
+  },
+  "issued_on": "2026-11-01",
+  "decision": {
+    "status": "act",
+    "action": "Sow within the next 7 days",
+    "deadline": "2026-11-08"
+  },
+  "confidence": {
+    "level": "medium",
+    "interval": {
+      "lower": 4.3,
+      "upper": 4.7,
+      "unit": "t/ha",
+      "level": 0.9
+    },
+    "basis": "Spread of simulated yields across 30 years of local weather"
+  },
+  "evidence": [
+    {
+      "statement": "The crop model ran 5 sowing dates across 30 years of local weather.",
+      "call_ids": [
+        "c3"
+      ]
+    },
+    {
+      "statement": "Early-November sowing lets grain filling finish before the March-April heat.",
+      "call_ids": [
+        "c1",
+        "c3"
+      ]
+    },
+    {
+      "statement": "The local soil holds enough water for germination after a pre-sowing irrigation.",
+      "call_ids": [
+        "c2"
+      ]
+    }
+  ],
+  "cost_of_waiting": {
+    "metric": "median grain yield",
+    "unit": "t/ha",
+    "points": [
+      {
+        "delay_days": 0,
+        "value": 4.6
+      },
+      {
+        "delay_days": 7,
+        "value": 4.5
+      },
+      {
+        "delay_days": 14,
+        "value": 4.3
+      },
+      {
+        "delay_days": 21,
+        "value": 4.0
+      },
+      {
+        "delay_days": 28,
+        "value": 3.6
+      }
+    ],
+    "summary": "Each week of delay costs about 0.2 t/ha.",
+    "call_ids": [
+      "c3"
+    ]
+  },
+  "trust": {
+    "not_modelled": [
+      "rust",
+      "aphids",
+      "lodging"
+    ],
+    "ask_expert_if": [
+      "the field is waterlogged",
+      "late rains are forecast"
+    ]
+  },
+  "receipt": [
+    {
+      "id": "c1",
+      "tool": "weather_summary",
+      "tool_version": "0.1.0",
+      "inputs": {
+        "lat": 32.08,
+        "lon": 72.67,
+        "years": "1995-2025"
+      },
+      "data_source": "NASA POWER daily",
+      "run_at": "2026-11-01T06:00:00Z"
+    },
+    {
+      "id": "c2",
+      "tool": "soil_profile",
+      "tool_version": "0.1.0",
+      "inputs": {
+        "lat": 32.08,
+        "lon": 72.67
+      },
+      "data_source": "SoilGrids 250 m",
+      "data_version": "2.0",
+      "run_at": "2026-11-01T06:00:05Z"
+    },
+    {
+      "id": "c3",
+      "tool": "sowing_window",
+      "tool_version": "0.1.0",
+      "inputs": {
+        "crop": "wheat",
+        "dates": 5,
+        "weather_years": 30
+      },
+      "data_source": "WOFOST via PCSE",
+      "run_at": "2026-11-01T06:01:00Z"
+    }
+  ],
+  "follow_up": {
+    "check_on": "2026-12-01",
+    "method": "Sentinel-2 NDVI rise confirming crop emergence after sowing",
+    "tool": "field_stress"
+  }
+}

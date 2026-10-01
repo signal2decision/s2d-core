@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "s2d-core: the Signal2Decision Decision Card format"
+type: software
+version: 0.1.0
+date-released: 2026-10-01
+license: MIT
+authors:
+  - family-names: Abbas
+    given-names: Arshad
+repository-code: "https://github.com/signal2decision/s2d-core"
+keywords:
+  - agriculture
+  - decision support
+  - AI agents
+  - crop models
+  - reproducibility

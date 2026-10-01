@@ -1,0 +1,542 @@
+{
+  "$defs": {
+    "Confidence": {
+      "additionalProperties": false,
+      "properties": {
+        "level": {
+          "$ref": "#/$defs/ConfidenceLevel"
+        },
+        "interval": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Interval"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "basis": {
+          "description": "What the confidence is based on.",
+          "minLength": 10,
+          "title": "Basis",
+          "type": "string"
+        }
+      },
+      "required": [
+        "level",
+        "basis"
+      ],
+      "title": "Confidence",
+      "type": "object"
+    },
+    "ConfidenceLevel": {
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "title": "ConfidenceLevel",
+      "type": "string"
+    },
+    "CostOfWaiting": {
+      "additionalProperties": false,
+      "description": "Only present when a tool actually computed it. Never estimated by hand.",
+      "properties": {
+        "metric": {
+          "description": "e.g. 'median grain yield'.",
+          "title": "Metric",
+          "type": "string"
+        },
+        "unit": {
+          "title": "Unit",
+          "type": "string"
+        },
+        "points": {
+          "items": {
+            "$ref": "#/$defs/DelayPoint"
+          },
+          "minItems": 2,
+          "title": "Points",
+          "type": "array"
+        },
+        "summary": {
+          "maxLength": 200,
+          "minLength": 10,
+          "title": "Summary",
+          "type": "string"
+        },
+        "call_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Call Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "metric",
+        "unit",
+        "points",
+        "summary",
+        "call_ids"
+      ],
+      "title": "CostOfWaiting",
+      "type": "object"
+    },
+    "Crop": {
+      "enum": [
+        "wheat",
+        "maize",
+        "rice",
+        "potato",
+        "sorghum",
+        "soybean",
+        "millet"
+      ],
+      "title": "Crop",
+      "type": "string"
+    },
+    "Decision": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/Status"
+        },
+        "action": {
+          "maxLength": 120,
+          "minLength": 5,
+          "title": "Action",
+          "type": "string"
+        },
+        "deadline": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deadline"
+        }
+      },
+      "required": [
+        "status",
+        "action"
+      ],
+      "title": "Decision",
+      "type": "object"
+    },
+    "DelayPoint": {
+      "additionalProperties": false,
+      "properties": {
+        "delay_days": {
+          "minimum": 0,
+          "title": "Delay Days",
+          "type": "integer"
+        },
+        "value": {
+          "title": "Value",
+          "type": "number"
+        }
+      },
+      "required": [
+        "delay_days",
+        "value"
+      ],
+      "title": "DelayPoint",
+      "type": "object"
+    },
+    "Evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "statement": {
+          "maxLength": 240,
+          "minLength": 10,
+          "title": "Statement",
+          "type": "string"
+        },
+        "call_ids": {
+          "description": "Receipt calls that support this statement.",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Call Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "statement",
+        "call_ids"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    },
+    "FollowUp": {
+      "additionalProperties": false,
+      "description": "Follow-through: how and when the agent will check whether the decision worked.",
+      "properties": {
+        "check_on": {
+          "description": "When the result will be checked.",
+          "format": "date",
+          "title": "Check On",
+          "type": "string"
+        },
+        "method": {
+          "description": "e.g. 'Sentinel-2 NDVI rise confirming emergence'.",
+          "maxLength": 200,
+          "minLength": 10,
+          "title": "Method",
+          "type": "string"
+        },
+        "tool": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Tool that will run the check, e.g. 'field_stress'.",
+          "title": "Tool"
+        }
+      },
+      "required": [
+        "check_on",
+        "method"
+      ],
+      "title": "FollowUp",
+      "type": "object"
+    },
+    "Interval": {
+      "additionalProperties": false,
+      "properties": {
+        "lower": {
+          "title": "Lower",
+          "type": "number"
+        },
+        "upper": {
+          "title": "Upper",
+          "type": "number"
+        },
+        "unit": {
+          "title": "Unit",
+          "type": "string"
+        },
+        "level": {
+          "default": 0.9,
+          "description": "Coverage, e.g. 0.9 for a 90% range.",
+          "exclusiveMaximum": 1,
+          "exclusiveMinimum": 0,
+          "title": "Level",
+          "type": "number"
+        }
+      },
+      "required": [
+        "lower",
+        "upper",
+        "unit"
+      ],
+      "title": "Interval",
+      "type": "object"
+    },
+    "Location": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "description": "Human-readable place name, e.g. 'Sargodha'.",
+          "minLength": 2,
+          "title": "Name",
+          "type": "string"
+        },
+        "country_code": {
+          "description": "ISO 3166-1 alpha-2 code, e.g. 'PK'.",
+          "pattern": "^[A-Z]{2}$",
+          "title": "Country Code",
+          "type": "string"
+        },
+        "lat": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "Lat",
+          "type": "number"
+        },
+        "lon": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Lon",
+          "type": "number"
+        }
+      },
+      "required": [
+        "name",
+        "country_code",
+        "lat",
+        "lon"
+      ],
+      "title": "Location",
+      "type": "object"
+    },
+    "Outcome": {
+      "additionalProperties": false,
+      "description": "Filled in later, when someone reports what happened.",
+      "properties": {
+        "reported_on": {
+          "format": "date",
+          "title": "Reported On",
+          "type": "string"
+        },
+        "followed": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Followed"
+        },
+        "result": {
+          "title": "Result",
+          "type": "string"
+        },
+        "source": {
+          "enum": [
+            "farmer",
+            "agronomist",
+            "dataset",
+            "other"
+          ],
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "reported_on",
+        "result",
+        "source"
+      ],
+      "title": "Outcome",
+      "type": "object"
+    },
+    "Status": {
+      "enum": [
+        "act",
+        "wait",
+        "uncertain"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "ToolCall": {
+      "additionalProperties": false,
+      "description": "One entry in the receipt: exactly what ran, on what, and when.",
+      "properties": {
+        "id": {
+          "description": "Call ID referenced by evidence, e.g. 'c1'.",
+          "pattern": "^c[0-9]+$",
+          "title": "Id",
+          "type": "string"
+        },
+        "tool": {
+          "description": "Tool name, e.g. 'sowing_window'.",
+          "title": "Tool",
+          "type": "string"
+        },
+        "tool_version": {
+          "title": "Tool Version",
+          "type": "string"
+        },
+        "inputs": {
+          "additionalProperties": true,
+          "title": "Inputs",
+          "type": "object"
+        },
+        "data_source": {
+          "description": "Dataset or model behind the call, e.g. 'NASA POWER daily'.",
+          "title": "Data Source",
+          "type": "string"
+        },
+        "data_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Data Version"
+        },
+        "run_at": {
+          "format": "date-time",
+          "title": "Run At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "tool",
+        "tool_version",
+        "data_source",
+        "run_at"
+      ],
+      "title": "ToolCall",
+      "type": "object"
+    },
+    "Trust": {
+      "additionalProperties": false,
+      "description": "'When not to trust this' — mandatory on every card.",
+      "properties": {
+        "not_modelled": {
+          "description": "What the tools do not account for.",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Not Modelled",
+          "type": "array"
+        },
+        "ask_expert_if": {
+          "description": "Situations where a local expert should decide.",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Ask Expert If",
+          "type": "array"
+        }
+      },
+      "required": [
+        "not_modelled",
+        "ask_expert_if"
+      ],
+      "title": "Trust",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "0.1.0",
+      "default": "0.1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "id": {
+      "description": "e.g. 'S2D-WHT-0001'.",
+      "pattern": "^S2D-[A-Z]{3}-[0-9]{4}$",
+      "title": "Id",
+      "type": "string"
+    },
+    "question": {
+      "maxLength": 160,
+      "minLength": 10,
+      "title": "Question",
+      "type": "string"
+    },
+    "crop": {
+      "$ref": "#/$defs/Crop"
+    },
+    "location": {
+      "$ref": "#/$defs/Location"
+    },
+    "issued_on": {
+      "format": "date",
+      "title": "Issued On",
+      "type": "string"
+    },
+    "decision": {
+      "$ref": "#/$defs/Decision"
+    },
+    "confidence": {
+      "$ref": "#/$defs/Confidence"
+    },
+    "evidence": {
+      "items": {
+        "$ref": "#/$defs/Evidence"
+      },
+      "maxItems": 5,
+      "minItems": 1,
+      "title": "Evidence",
+      "type": "array"
+    },
+    "cost_of_waiting": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/CostOfWaiting"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "trust": {
+      "$ref": "#/$defs/Trust"
+    },
+    "receipt": {
+      "items": {
+        "$ref": "#/$defs/ToolCall"
+      },
+      "minItems": 1,
+      "title": "Receipt",
+      "type": "array"
+    },
+    "follow_up": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/FollowUp"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "outcome": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Outcome"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "illustrative": {
+      "default": false,
+      "description": "True for demo cards whose numbers show the format, not a real result.",
+      "title": "Illustrative",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "id",
+    "question",
+    "crop",
+    "location",
+    "issued_on",
+    "decision",
+    "confidence",
+    "evidence",
+    "trust",
+    "receipt"
+  ],
+  "title": "S2D Decision Card",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://signal2decision.org/schema/decision-card/0.1.0.json"
+}
